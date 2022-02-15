@@ -87,9 +87,27 @@ element* find_root( element* e){
 
 void resolve_parameters( element* current_element, const char* line){
     int index = start_index(line) + 1 + current_element->type.length();
-    //test if line has parameters
-    if (line[index] == '>') return;
-    // resolve parameters
+    while(line[index] != '>' && line[index] != '/'){
+        //if previously read parameter index points to space -- catch that
+        if (line[index] == ' '){
+            index++;
+            continue;
+        }
+        Parameter* parameter = new Parameter;
+        while (line[index] != '='){
+            parameter->name += line[index];
+            index++;
+        }
+        // index currently points at '=' next is '"' then follows the value
+        index += 2;
+        while (line [index] != '"'){
+            parameter->value += line[index];
+            index++;
+        }
+        // fully read one parameter now add it to current_parameter
+        current_element->parameters.push_back(parameter);
+        index++;
+    }
     return;
 }
 

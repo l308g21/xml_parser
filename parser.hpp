@@ -5,7 +5,7 @@
 #include <vector>
 
 
-struct parameter{
+struct Parameter{
     std::string name;
     std::string value;
 };
@@ -15,7 +15,7 @@ struct element{
     std::string type;
     element* parent;
     std::vector <element*> children;
-    std::vector <parameter> parameters;
+    std::vector <Parameter*> parameters;
 };
 
 void e_init(element* e);
