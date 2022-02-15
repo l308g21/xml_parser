@@ -4,8 +4,9 @@
 #include <string.h>
 
 void e_init(element* e){
-    e->type = "undefined";
+    e->type = "root";
     e->parent = nullptr;
+    e->depth = 0;
     return;
 }
 
@@ -72,6 +73,7 @@ element* enter_new_element(element* current_element){
     element* new_element = new element;
     e_init(new_element);
     new_element->parent = current_element;
+    new_element->depth = new_element->parent->depth +1;
     new_element->parent->children.push_back(new_element);
     return new_element;
 }
@@ -79,7 +81,11 @@ element* enter_new_element(element* current_element){
 
 
 element* find_root( element* e){
-    if (e->parent != nullptr) find_root(e->parent);
+    if (e->parent != nullptr) {
+        // std::cout << "parent exists" << std::endl;
+        return find_root(e->parent);
+    }
+    // std::cout << "there is no parent to this element" << std::endl;
     return e;
 }
 
@@ -130,12 +136,12 @@ element* parse(std::string filename){
     int depth = 0;
     int line_count = 0; 
     int index;
-
     char current_line[151];
-    while (line_count < 9){
+
+    while (line_count < 111){
         if (file.eof()) break;
         file.getline(current_line, 150, '\n');
-        std::cout << current_line << '\n';
+        // std::cout << current_line << '\n';
         
         int result = categorize_line(current_line);
         switch(result){
@@ -154,11 +160,37 @@ element* parse(std::string filename){
         if (result == line_element::ONELINE || result == line_element::ONELINE_BODY){
             current_element = current_element->parent;
         }
-        std::cout << '\n';
-
+        // std::cout << '\n';
         line_count++;
     }
+    
+    root = find_root(current_element);
+    print_tree( root );
+    print_node( root );
     file.close();
-
     return root;
+}
+
+
+
+void print_node(element* node){
+    std::cout << "type:  " << node->type << '\n';
+    std::cout << "depth: " << node->depth << '\n';
+    std::cout << "number of parameters: " << node->parameters.size() << '\n';
+    std::cout << "number of children: " << node->children.size() << '\n';
+    std::cout << "parent: " << node->parent->type << '\n';
+}
+void print_tree(element* root){
+    int index = 0;
+    while (index < root->depth){
+        std::cout << '\t';
+        index++;
+    }
+    std::cout << root->type << '\n';
+    index = 0;
+    while (index < root->children.size() ){
+        print_tree(root->children[index]);
+        index++;
+    }
+    return;
 }

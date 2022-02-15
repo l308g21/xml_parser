@@ -14,10 +14,13 @@ struct Parameter{
 struct element{
     std::string type;
     element* parent;
+    int depth;
     std::vector <element*> children;
     std::vector <Parameter*> parameters;
 };
 
 void e_init(element* e);
 element* parse(std::string str );
+void print_tree(element* root);
+void print_node(element* node);
 #endif
