@@ -1,15 +1,11 @@
 #include "parser.hpp"
 #include <fstream>
 #include <iostream>
+#include <string.h>
 
 void e_init(element* e){
-
-    e->body = "";
-    e->values = "";
     e->type = "undefined";
     e->parent = nullptr;
-    e->child_n = 0;
-    e->depth = 0;
     return;
 }
 
@@ -25,9 +21,11 @@ int start_index(const char* str){
     return -1;
 }
 
+
+
 enum line_element { META = 1, OPEN, ONELINE, ONELINE_BODY, CLOSE };
 
-int inspect_line(const char* line){
+int categorize_line(const char* line){
     int index = start_index(line);
     int return_value = 0;
     switch (line[index + 1]){
@@ -57,11 +55,11 @@ int inspect_line(const char* line){
 
 
 
-std::string get_type(std::string line){
-    int index = 1;
+std::string get_type(const char* line){
+    int index = start_index(line) + 1; 
     std::string type;
 
-    while (line[index] != ' '){
+    while (line[index] != ' ' && line[index] != '>'){
         type += line[index];
         index++;
     }
@@ -71,14 +69,28 @@ std::string get_type(std::string line){
 
 
 element* enter_new_element(element* current_element){
-    if (current_element->parent!= nullptr){
-        element* new_element = new element;
-        e_init(new_element);
-        new_element->parent = current_element;
-        current_element = new_element;
+    element* new_element = new element;
+    e_init(new_element);
+    new_element->parent = current_element;
+    new_element->parent->children.push_back(new_element);
+    return new_element;
+}
 
-    }    
-    return current_element;
+
+
+element* find_root( element* e){
+    if (e->parent != nullptr) find_root(e->parent);
+    return e;
+}
+
+
+
+void resolve_parameters( element* current_element, const char* line){
+    int index = start_index(line) + 1 + current_element->type.length();
+    //test if line has parameters
+    if (line[index] == '>') return;
+    // resolve parameters
+    return;
 }
 
 
@@ -88,6 +100,7 @@ element* parse(std::string filename){
     element* root = new element;
     element* current_element;
     e_init(root);
+    current_element = root;
 
     char c;
     std::ifstream file( filename );
@@ -106,29 +119,23 @@ element* parse(std::string filename){
         file.getline(current_line, 150, '\n');
         std::cout << current_line << '\n';
         
-        int result = inspect_line(current_line);
-        switch( result){
-            case line_element::OPEN:
-                std::cout << "open new element" << std::endl;
-                if (root-> type == "undefined"){
-
-                }
-                break;
+        int result = categorize_line(current_line);
+        switch(result){
+            case line_element::CLOSE: 
+                current_element = current_element->parent;
+                continue;
             case line_element::META:
-                std::cout << "just some meta info" << std::endl;
+                continue;
+            default:
+                current_element = enter_new_element(current_element);
+                current_element->type = get_type(current_line);
+                resolve_parameters(current_element, current_line);
                 break;
-            case line_element::ONELINE:
-                std::cout << "oneline no body" << std::endl;    
-                break;
-            case line_element::ONELINE_BODY:
-                std::cout << "oneline with body" << std::endl;
-                break;
-            case line_element::CLOSE:
-                std::cout << "close element" << std::endl;
-                break;
-            default:  break;  //there has been a formatting error
         }
-       
+
+        if (result == line_element::ONELINE || result == line_element::ONELINE_BODY){
+            current_element = current_element->parent;
+        }
         std::cout << '\n';
 
         line_count++;

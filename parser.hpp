@@ -4,15 +4,18 @@
 #include <string>
 #include <vector>
 
+
+struct parameter{
+    std::string name;
+    std::string value;
+};
+
+
 struct element{
     std::string type;
-    uint8_t depth;
     element* parent;
-    std::vector <element> children;
-    unsigned int child_n;
-    std::string body;
-    std::string values;
-    
+    std::vector <element*> children;
+    std::vector <parameter> parameters;
 };
 
 void e_init(element* e);
