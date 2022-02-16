@@ -108,6 +108,22 @@ void resolve_parameters( element* current_element, const char* line){
 
 
 
+void process_oneline_body(element* current_element, const char* line){
+    // oneline with body is indefferent to parameter to parent object
+    std::string name = get_type(line);
+    int index = start_index(line) + 1 + name.length() + 1;
+    Parameter* parameter = new Parameter;
+    parameter->name = name;
+    while(line[index] != '<'){
+        parameter->value += line[index];
+        index++;
+    }
+    current_element->parameters.push_back(parameter);
+    return;
+
+}
+
+
 element* parse(std::string filename){
 
     element* root = new element;
@@ -139,6 +155,9 @@ element* parse(std::string filename){
                 continue;
             case line_element::META:
                 continue;
+            case line_element::ONELINE_BODY:
+                process_oneline_body(current_element, current_line);
+                break;
             default:
                 current_element = enter_new_element(current_element);
                 current_element->type = get_type(current_line);
@@ -146,16 +165,10 @@ element* parse(std::string filename){
                 break;
         }
 
-        if (result == line_element::ONELINE || result == line_element::ONELINE_BODY){
-            current_element = current_element->parent;
-        }
-        // std::cout << '\n';
+        if(result == line_element::ONELINE) current_element = current_element->parent;
         line_count++;
     }
     
-    // root = find_root(current_element);
-    // print_tree( root );
-    // print_node( root );
     file.close();
     return root;
 }
@@ -191,7 +204,7 @@ void print_tree(element* root){
 
 
 
-// this would be a great opportunity for using namespaces
+// this would be a great opportunity for making use of namespaces
 element* find(std::string name, element* node){
     if (node->type == name) return node;
     int index = 0;
