@@ -80,17 +80,6 @@ element* enter_new_element(element* current_element){
 
 
 
-element* find_root( element* e){
-    if (e->parent != nullptr) {
-        // std::cout << "parent exists" << std::endl;
-        return find_root(e->parent);
-    }
-    // std::cout << "there is no parent to this element" << std::endl;
-    return e;
-}
-
-
-
 void resolve_parameters( element* current_element, const char* line){
     int index = start_index(line) + 1 + current_element->type.length();
     while(line[index] != '>' && line[index] != '/'){
@@ -164,9 +153,9 @@ element* parse(std::string filename){
         line_count++;
     }
     
-    root = find_root(current_element);
-    print_tree( root );
-    print_node( root );
+    // root = find_root(current_element);
+    // print_tree( root );
+    // print_node( root );
     file.close();
     return root;
 }
@@ -178,8 +167,13 @@ void print_node(element* node){
     std::cout << "depth: " << node->depth << '\n';
     std::cout << "number of parameters: " << node->parameters.size() << '\n';
     std::cout << "number of children: " << node->children.size() << '\n';
-    std::cout << "parent: " << node->parent->type << '\n';
+    if (node->parent != nullptr)    std::cout << "parent: " << node->parent->type << '\n';
+    else std::cout << "node has no parent\n";
+    return;
 }
+
+
+
 void print_tree(element* root){
     int index = 0;
     while (index < root->depth){
@@ -193,4 +187,28 @@ void print_tree(element* root){
         index++;
     }
     return;
+}
+
+
+
+// this would be a great opportunity for using namespaces
+element* find(std::string name, element* node){
+    if (node->type == name) return node;
+    int index = 0;
+    element* result;
+    while (index < node->children.size()){
+        result = find(name, node->children[index]);
+        if (result != nullptr) return result;
+        index++;
+    }
+    return nullptr;
+}
+
+
+
+element* find_root( element* e){
+    if (e->parent != nullptr) {
+        return find_root(e->parent);
+    }
+    return e;
 }

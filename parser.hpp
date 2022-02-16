@@ -23,4 +23,7 @@ void e_init(element* e);
 element* parse(std::string str );
 void print_tree(element* root);
 void print_node(element* node);
+
+element* find(std::string, element* node);
+element* find_root(element* node);
 #endif
