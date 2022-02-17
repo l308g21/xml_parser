@@ -143,7 +143,7 @@ element* parse(std::string filename){
     int index;
     char current_line[151];
 
-    while (line_count < 111){
+    while (true){
         if (file.eof()) break;
         file.getline(current_line, 150, '\n');
         // std::cout << current_line << '\n';
@@ -224,4 +224,20 @@ element* find_root( element* e){
         return find_root(e->parent);
     }
     return e;
+}
+
+
+
+std::vector<element*> find_all(std::string name, element* node){
+    std::vector<element*> nodes;
+    if (node->type == name) nodes.push_back(node);
+    int index = 0;
+    std::vector<element*> result;
+    while (index < node->children.size()){
+        result = find_all(name,node->children[index]);
+        for (int i = 0; i < result.size(); i++)     nodes.push_back(result[i]);
+        result.clear();
+        index++;
+    }
+    return nodes;               // counting on compiler optimization to perform efficient return
 }
