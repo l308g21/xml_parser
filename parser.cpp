@@ -241,3 +241,26 @@ std::vector<element*> find_all(std::string name, element* node){
     }
     return nodes;               // counting on compiler optimization to perform efficient return
 }
+
+
+
+bool match(element* node1, element* node2){
+    if (node1->type != node1->type) return false;
+    if (node1->depth != node2->depth) return false;
+    if (node1->parameters.size() != node2->parameters.size()) return false;
+    if (node1->children.size() != node2->children.size()) return false;
+
+    int index = 0;
+    while (index < node1->parameters.size()){
+        if (node1->parameters[index]->name != node2->parameters[index]->name) return false;
+        if (node1->parameters[index]->value != node2->parameters[index]->value) return false;
+        index++;
+    }
+    index = 0;
+    bool is_match;
+    while (index < node1->children.size()){
+        if ( !match( node1->children[index], node2->children[index]) ) return false;
+        index++;
+    }
+    return true;
+}

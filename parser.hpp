@@ -27,4 +27,6 @@ void print_node(element* node);
 element* find(std::string name, element* node);
 element* find_root(element* node);
 std::vector<element*> find_all(std::string, element* node);
+
+bool match(element* node1, element* node2);
 #endif
