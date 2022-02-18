@@ -124,7 +124,6 @@ void process_oneline_body( Node* current_Node, const char* line ){
 
 
 Node* parse( std::string filename ){
-
     Node* root = new Node;
     Node* current_Node;
     e_init(root);
@@ -141,7 +140,7 @@ Node* parse( std::string filename ){
     int line_count  = 0; 
     char current_line[151];     // just some random length that happened to be longer than any lines in my testfile. maybe making use of std::string would be preferable
 
-    while (true){
+    while (line_count < 112){
         if (file.eof()) break;
         file.getline(current_line, 150, '\n');
         // std::cout << current_line << '\n';
@@ -261,4 +260,36 @@ bool match( Node* node1, Node* node2 ){
         index++;
     }
     return true;
+}
+
+
+
+void delete_node(Node* node){
+    while ( !node->children.empty() ){
+        delete_node(node->children[0]);
+    }
+    // no children left --> delete this node
+    // remove from parent
+    int index = 0;
+    while ( index < node->parent->children.size() ){
+        if ( match( node->parent->children[index], node ) ) break;
+        index++;
+    }
+    node->parent->children.erase( node->parent->children.begin() + index );
+    
+    index = 0;
+    while (index < node->parameters.size() ){
+        delete node->parameters[index];
+        index++;
+    }
+
+    delete node;
+    return;
+}
+
+
+
+void delete_tree(Node* node){
+    delete_node( find_root( node ) );
+    return;
 }

@@ -20,6 +20,7 @@ struct Node{
 
 Node* parse  ( std::string str );
 void delete_node( Node* node );
+void delete_tree( Node* node );
 void print_tree ( Node* root );
 void print_node ( Node* node );
 
