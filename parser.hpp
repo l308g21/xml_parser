@@ -10,23 +10,23 @@ struct Parameter{
     std::string value;
 };
 
-
-struct element{
+struct Node{
     std::string type;
-    element* parent;
-    int depth;
-    std::vector <element*> children;
-    std::vector <Parameter*> parameters;
+    Node*    parent;
+    int         depth;
+    std::vector <Node*>      children;
+    std::vector <Parameter*>    parameters;
 };
 
-void e_init(element* e);
-element* parse(std::string str );
-void print_tree(element* root);
-void print_node(element* node);
+Node* parse  ( std::string str );
+void delete_node( Node* node );
+void print_tree ( Node* root );
+void print_node ( Node* node );
 
-element* find(std::string name, element* node);
-element* find_root(element* node);
-std::vector<element*> find_all(std::string, element* node);
+Node* find       ( std::string name, Node* node );
+Node* find_root  ( Node* node );
+std::vector<Node*> find_all( std::string, Node* node );
 
-bool match(element* node1, element* node2);
-#endif
+bool match( Node* node1, Node* node2 );
+
+#endif // _H_PARSER_
