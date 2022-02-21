@@ -293,3 +293,14 @@ void delete_tree(Node* node){
     delete_node( find_root( node ) );
     return;
 }
+
+
+
+Parameter* find_parameter( std::string name, Node* node ){
+    int index = 0;
+    while ( index < node->parameters.size() ){
+        if ( node->parameters[index]->name == name ) return node->parameters[index];
+        index++;
+    }
+    return nullptr;
+}

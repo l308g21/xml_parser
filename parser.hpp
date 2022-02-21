@@ -29,5 +29,6 @@ Node* find_root  ( Node* node );
 std::vector<Node*> find_all( std::string, Node* node );
 
 bool match( Node* node1, Node* node2 );
+Parameter* find_parameter(std::string name, Node* node);
 
 #endif // _H_PARSER_
