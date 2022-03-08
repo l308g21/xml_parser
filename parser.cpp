@@ -129,18 +129,16 @@ Node* parse( std::string filename ){
     e_init(root);
     current_Node = root;
 
-    char c;
     std::ifstream file( filename );
     if ( ! file ){
         std::cerr << "error: file could not be opened!\n";
         exit( 1 ); 
     }
     
-    int depth       = 0;
-    int line_count  = 0; 
+    // int line_count  = 0;     // debug
     char current_line[151];     // just some random length that happened to be longer than any lines in my testfile. maybe making use of std::string would be preferable
 
-    while (true){
+     while (true){
         if (file.eof()) break;
         file.getline(current_line, 150, '\n');
         // std::cout << current_line << '\n';
@@ -163,7 +161,7 @@ Node* parse( std::string filename ){
         }
 
         if(result == line_Node::ONELINE) current_Node = current_Node->parent;
-        line_count++;
+        // line_count++;
     }
     
     file.close();
@@ -192,7 +190,7 @@ void print_tree( Node* root ){
     }
     std::cout << root->type << '\n';
     index = 0;
-    while (index < root->children.size() ){
+    while ( (long unsigned int) index < root->children.size() ){
         print_tree(root->children[index] );
         index++;
     }
@@ -206,7 +204,7 @@ Node* find( std::string name, Node* node ){
     if ( node->type == name ) return node;
     int index = 0;
     Node* result;
-    while ( index < node->children.size() ){
+    while ( (long unsigned int) index < node->children.size() ){
         result = find( name, node->children[index] );
         if ( result != nullptr ) return result;
         index++;
@@ -230,9 +228,9 @@ std::vector<Node*> find_all( std::string name, Node* node ){
     if ( node->type == name ) nodes.push_back( node );
     int index = 0;
     std::vector<Node*> result;
-    while ( index < node->children.size() ){
+    while ( (unsigned long int) index < node->children.size() ){
         result = find_all( name,node->children[index] );
-        for ( int i = 0; i < result.size(); i++ )     nodes.push_back( result[i] );
+        for ( int i = 0; (unsigned long int) i < result.size(); i++ )     nodes.push_back( result[i] );
         result.clear();
         index++;
     }
@@ -248,14 +246,13 @@ bool match( Node* node1, Node* node2 ){
     if ( node1->children.size() != node2->children.size() )     return false;
 
     int index = 0;
-    while ( index < node1->parameters.size() ){
+    while ( (unsigned long int) index < node1->parameters.size() ){
         if ( node1->parameters[index]->name != node2->parameters[index]->name )   return false;
         if ( node1->parameters[index]->value != node2->parameters[index]->value ) return false;
         index++;
     }
     index = 0;
-    bool is_match;
-    while ( index < node1->children.size() ){
+    while ( (unsigned long int) index < node1->children.size() ){
         if ( !match( node1->children[index], node2->children[index]) ) return false;
         index++;
     }
