@@ -1,13 +1,16 @@
+CC=g++
+C_FLAGS=-g -Wall
+
 build: test_xml_parser.run
 
 test_xml_parser.run: main.o parser.o
-	g++ main.o parser.o -o $@
+	$(CC) $(C_FLAGS) main.o parser.o -o $@
 
 main.o: main.cpp
-	g++ -c main.cpp
+	$(CC) $(C_FLAGS) -c main.cpp
 
 parser.o: parser.cpp parser.hpp
-	g++ -c parser.cpp
+	$(CC) $(C_FLAGS) -c parser.cpp
 
 
 
@@ -17,4 +20,4 @@ run: test_xml_parser.run
 .PHONY: clean
 
 clean:
-	rm -f *.o
+	rm -f *.o *.run

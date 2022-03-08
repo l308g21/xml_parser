@@ -140,7 +140,7 @@ Node* parse( std::string filename ){
     int line_count  = 0; 
     char current_line[151];     // just some random length that happened to be longer than any lines in my testfile. maybe making use of std::string would be preferable
 
-    while (line_count < 112){
+    while (true){
         if (file.eof()) break;
         file.getline(current_line, 150, '\n');
         // std::cout << current_line << '\n';

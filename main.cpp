@@ -8,7 +8,7 @@ int main(void){
 
     std::vector< Node* > points = find_all( "trkpt", root );
     if (! points.empty() ) std::cout << "found some points\n";
-
+	std::cout << "Number of points found: " << points.size() << std::endl;
     Node* bounds = find("bounds", root);
     float minlat = atof( find_parameter( "minlat", bounds )->value.c_str() );
     float minlon = atof( find_parameter( "minlon", bounds )->value.c_str() );
